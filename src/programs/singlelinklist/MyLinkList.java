@@ -14,10 +14,10 @@ public class MyLinkList<T> {
 		}
 
 		Node<T> current = head;
-		while (current.getNext() != null) {
-			current = current.getNext();
+		while (current.next != null) {
+			current = current.next;
 		}
-		current.setNext(node);
+		current.next = node;
 	}
 
 	public void add(T data, int index) {
@@ -29,63 +29,100 @@ public class MyLinkList<T> {
 			head = node;
 			return;
 		}
-		
+
 		Node<T> current = head;
 
-		for (int i = 0; i < index && current.getNext() != null; i++) {
-			current = current.getNext();
+		for (int i = 0; i < index && current.next != null; i++) {
+			current = current.next;
 		}
 
-		node.setNext(current.getNext());
-		current.setNext(node);
+		node.next = current.next;
+		current.next = node;
 	}
-	
+
 	public T get(int index) {
 		if (index < 0 || head == null) {
 			return null;
 		}
 		Node<T> current = head;
 		for (int i = 0; i < index; i++) {
-			if (current.getNext() == null) {
+			if (current.next == null) {
 				return null;
 			}
-			current = current.getNext();
+			current = current.next;
 		}
-		return current.getData();
+		return current.data;
 	}
 
 	public boolean remove(T data) {
 		if (head == null) {
 			return false;
 		}
-		
 		Node<T> current = head;
-		Node<T> prev = head;
+		Node<T> prev = null;
 
-		if (data.equals(head.getData())) {
-			head = head.getNext();
+		if (current != null && data.equals(current.data)) {
+			// increment head
+			head = head.next;
 			return true;
 		}
-		
-		while (current.getNext() != null) {
+
+		while (current != null && !data.equals(current.data)) {
 			prev = current;
-			current = current.getNext();
-			if (data.equals(current.getData())) {
-				
-			}
+			current = current.next;
 		}
-		return false;
-		
+
+		if (current == null) {
+			// Data not fount in the list.
+			return false;
+		}
+
+		prev.next = current.next;
+		return true;
+
 	}
 
 	public boolean remove(int position) {
-		return false;
+		if (head == null || position < 0) {
+			return false;
+		}
+		if (position == 0) {
+			head = head.next;
+			return true;
+		}
+
+		Node<T> current = head;
+
+		for (int i = 0; current != null && i < position - 1; i++) {
+			// Move till the previous node.
+			current = current.next;
+		}
+
+		if (current == null || current.next == null) {
+			// Index out of bounds.
+			return false;
+		}
+		current.next = current.next.next;
+		return true;
 	}
 
-
-
 	public T getMiddle() {
-		return null;
+		if (head == null) {
+			return null;
+		}
+		if (head.next == null) {
+			return head.data;
+		}
+
+		Node<T> one = head;
+		Node<T> two = head;
+
+		while (one != null && one.next != null) {
+			one = one.next.next;
+			two = one.next;
+		}
+
+		return two.data;
 	}
 
 }
